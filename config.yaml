@@ -1,12 +1,45 @@
-device: "cuda"                # Use GPU
-z_dim: 128                     # Slightly larger noise vector → more diverse faces
-lr: 0.00005                    # Lower LR stabilizes WGAN-GP training for larger batch sizes
-batch_size: 64                 # Large batch to fully utilize A6000 VRAM
-epochs: 50                     # More epochs for higher-quality images
-n_critic: 5                    # Keep multiple critic updates per generator
-lambda_gp: 10                   # Standard value for gradient penalty
+# Optimized WGAN-GP Configuration for A6000 (48GB VRAM)
+
+device: "cuda"
+
+# Model architecture
+z_dim: 128                      # Latent dimension
+ngf: 64                         # Generator base filters
+ndf: 64                         # Discriminator base filters
+
+# Training hyperparameters
+lr: 0.0001                      # Increased LR with Adam + spectral norm is more stable
+batch_size: 128                 # Doubled batch size for A6000 (can go even higher)
+epochs: 100                     # More epochs for convergence
+n_critic: 3                     # Reduced from 5 (spectral norm stabilizes training)
+lambda_gp: 10                   # Standard gradient penalty weight
+
+# Optimization
+use_amp: true                   # Mixed precision training (2-3x speedup)
+grad_clip: 1.0                  # Gradient clipping for stability
+
+# Checkpointing
 checkpoint_path: "checkpoint/wgan_gp"
-dataset_path: "srv/shared/face-vae/img_align_celeba/img_align_celeba"
+save_every: 5                   # Save checkpoint every N epochs
+
+# Data
+dataset_path: "/home/zineddinee/shared/face-vae/img_align_celeba/img_align_celeba"
 image_size:
   height: 218
   width: 178
+num_workers: 8                  # DataLoader workers (adjust based on CPU cores)
+pin_memory: true                # Faster CPU-GPU transfer
+
+# Data augmentation (optional - uncomment to enable)
+# use_augmentation: true
+# augmentation:
+#   horizontal_flip: 0.5
+#   color_jitter: 0.1
+
+
+
+
+
+
+
+

@@ -29,3 +29,28 @@ class Visualizer:
             save_path = os.path.join(self.output_dir, f"epoch_{epoch}.png")
             vutils.save_image(fake_imgs, save_path, nrow=nrow, padding=2)
         self.G.train()
+
+
+
+import os
+from PIL import Image
+from torch.utils.data import Dataset
+from torchvision import transforms
+
+class CelebADataset(Dataset):
+    def __init__(self, root_dir, transform=None):
+        self.root_dir = root_dir
+        self.transform = transform
+        # list all image files in the folder
+        self.images = [f for f in os.listdir(root_dir) if f.endswith(".jpg")]
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        img_path = os.path.join(self.root_dir, self.images[idx])
+        img = Image.open(img_path).convert("RGB")
+        if self.transform:
+            img = self.transform(img)
+        return img
+
