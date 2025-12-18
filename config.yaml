@@ -1,0 +1,12 @@
+device: "cuda"                # Use GPU
+z_dim: 128                     # Slightly larger noise vector → more diverse faces
+lr: 0.00005                    # Lower LR stabilizes WGAN-GP training for larger batch sizes
+batch_size: 64                 # Large batch to fully utilize A6000 VRAM
+epochs: 50                     # More epochs for higher-quality images
+n_critic: 5                    # Keep multiple critic updates per generator
+lambda_gp: 10                   # Standard value for gradient penalty
+checkpoint_path: "checkpoint/wgan_gp"
+dataset_path: "srv/shared/face-vae/img_align_celeba/img_align_celeba"
+image_size:
+  height: 218
+  width: 178
