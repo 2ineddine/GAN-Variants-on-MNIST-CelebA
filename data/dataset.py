@@ -1,6 +1,5 @@
 import torch
 import torchvision.utils as vutils
-import matplotlib.pyplot as plt
 import os
 
 class Visualizer:
@@ -17,8 +16,8 @@ class Visualizer:
         self.z_dim = z_dim
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def generate_and_show(self, epoch, n_images=4):
-        """Generate n_images and display/save them"""
+    def generate_and_save(self, epoch, n_images=4, nrow=2):
+        """Generate n_images and save them to disk"""
         self.G.eval()
         with torch.no_grad():
             z = torch.randn(n_images, self.z_dim).to(self.device)
@@ -28,13 +27,5 @@ class Visualizer:
 
             # Save grid
             save_path = os.path.join(self.output_dir, f"epoch_{epoch}.png")
-            vutils.save_image(fake_imgs, save_path, nrow=2)
-
-            # Display in notebook / terminal
-            grid = vutils.make_grid(fake_imgs, nrow=2, padding=2)
-            plt.figure(figsize=(4,4))
-            plt.axis("off")
-            plt.title(f"Generated Images at Epoch {epoch}")
-            plt.imshow(grid.permute(1, 2, 0).cpu())
-            plt.show()
+            vutils.save_image(fake_imgs, save_path, nrow=nrow, padding=2)
         self.G.train()

@@ -8,8 +8,7 @@ class Trainer:
         self.G = G.to(self.device)
         self.D = D.to(self.device)
         self.dataloader = dataloader
-        self.visualizer = Visualizer(self.G, device=self.device, z_dim=self.z_dim)
-        self.z_dim = config['z_dim']
+        self.visualizer = Visualizer(self.G, device=self.device, z_dim=self.z_dim)  
         self.n_critic = config['n_critic']
         self.lambda_gp = config['lambda_gp']
 
@@ -47,8 +46,7 @@ class Trainer:
                 G_loss.backward()
                 self.opt_G.step()
             # ----- Visualize generated images -----
-            self.visualizer.generate_and_show(epoch, n_images=4)
-            # ----- Save checkpoint every 5 epochs -----
+            self.visualizer.generate_and_save(epoch, n_images=4)    
             if epoch % 5 == 0:
                 torch.save({
                     'epoch': epoch,
